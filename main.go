@@ -9,14 +9,43 @@ import (
 func main() {
 	//defer fmt.Println(1) // будет выполнен последний
 	//defer fmt.Println(2)
-	files.WriteFile("Привет, я файл!", "file.txt")
-	files.ReadFile("file.txt")
+Menu:
+	for {
+		switch getMenu() {
+		case 1:
+			createAccount()
+		case 2:
+			findAccount()
+		case 3:
+			deleteAccount()
+		default:
+			break Menu
+		}
+	}
+}
 
+func getMenu() int {
+	var userChoice int
+
+	fmt.Println("_Менеджер паролей_")
+	fmt.Println("1. Создать аккаунт")
+	fmt.Println("2. Найти аккаунт")
+	fmt.Println("3. Удалить аккаунт")
+	fmt.Println("4. Выход")
+
+	fmt.Print("Выберите действие: ")
+	fmt.Scan(&userChoice)
+
+	return userChoice
+}
+
+// Создание аккаунта и запись в JSON файл
+func createAccount() {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
 
-	myAccount, err := account.NewAccountWithTimeStamp(login, password, url)
+	myAccount, err := account.NewAccount(login, password, url)
 
 	if err != nil {
 		switch err.Error() {
@@ -28,9 +57,22 @@ func main() {
 		return
 	}
 
-	myAccount.OutputPassword()
+	vault := account.NewVault()
+	vault.AddAccount(*myAccount)
+	data, err := vault.ToBytes()
 
+	if err != nil {
+		fmt.Println("Не удалось преобразовать в JSON")
+		return
+	}
+	files.WriteFile(data, "data.json")
 }
+
+// Поиск аккаунта
+func findAccount() {}
+
+// Удаление аккаунта
+func deleteAccount() {}
 
 func promptData(prompt string) string {
 	fmt.Print(prompt + ": ")

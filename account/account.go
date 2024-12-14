@@ -11,9 +11,9 @@ import (
 )
 
 type Account struct {
-	login    string `json:"login" xml:"test"` // тэги
-	password string
-	url      string
+	Login    string `json:"login" xml:"test"` // тэги
+	Password string `json:"password" xml:"test"`
+	Url      string `json:"url" xml:"test"`
 }
 
 type accountWithTimeStamp struct {
@@ -22,7 +22,7 @@ type accountWithTimeStamp struct {
 	Account
 }
 
-func newAccount(login, password, urlString string) (*Account, error) {
+func NewAccount(login, password, urlString string) (*Account, error) {
 	if login == "" {
 		return nil, errors.New("LOGIN_EMPTY")
 	}
@@ -33,9 +33,9 @@ func newAccount(login, password, urlString string) (*Account, error) {
 	}
 
 	newAcc := &Account{
-		url:      urlString,
-		login:    login,
-		password: password,
+		Url:      urlString,
+		Login:    login,
+		Password: password,
 	}
 	if password == "" {
 		newAcc.generatePassword(12)
@@ -58,12 +58,12 @@ func NewAccountWithTimeStamp(login, password, urlString string) (*accountWithTim
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
 		Account: Account{
-			url:      urlString,
-			login:    login,
-			password: password,
+			Url:      urlString,
+			Login:    login,
+			Password: password,
 		},
 	}
-	//var field, _ = reflect.TypeOf(newAcc).Elem().FieldByName("login")
+	//var field, _ = reflect.TypeOf(newAcc).Elem().FieldByName("Login")
 	//fmt.Println(string(field.Tag))
 
 	if password == "" {
@@ -75,12 +75,12 @@ func NewAccountWithTimeStamp(login, password, urlString string) (*accountWithTim
 }
 
 func (acc accountWithTimeStamp) OutputPassword() {
-	color.Red(acc.login)
-	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s", acc.login, acc.password, acc.url, acc.createdAt, acc.updatedAt)
+	color.Red(acc.Login)
+	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s", acc.Login, acc.Password, acc.Url, acc.createdAt, acc.updatedAt)
 }
 
 func (acc Account) OutputPassword() {
-	fmt.Printf("Login: %s\nPassword: %s\nURL: %s", acc.login, acc.password, acc.url)
+	fmt.Printf("Login: %s\nPassword: %s\nURL: %s", acc.Login, acc.Password, acc.Url)
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-*!")
@@ -91,5 +91,5 @@ func (acc *Account) generatePassword(n int) {
 		randomIndex := rand.IntN(len(letterRunes))
 		password += string(letterRunes[randomIndex])
 	}
-	acc.password = password
+	acc.Password = password
 }
