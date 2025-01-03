@@ -6,7 +6,6 @@ import (
 )
 
 func ReadFile(path string) {
-	//file, err := os.Open("file.txt") // чтение файла по байтам
 	data, err := os.ReadFile("file.txt")
 	if err != nil {
 		fmt.Println(err)
@@ -23,7 +22,6 @@ func WriteFile(content []byte, name string) {
 	len, err := file.Write(content) // число байт записанных
 	defer file.Close()              // выполнить вконце stack frame
 	if err != nil {
-		//file.Close() // закрытие файла, может вернуть ошибку
 		fmt.Println(err)
 		return
 	}

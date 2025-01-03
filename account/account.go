@@ -11,9 +11,11 @@ import (
 )
 
 type Account struct {
-	Login    string `json:"login" xml:"test"` // тэги
-	Password string `json:"password" xml:"test"`
-	Url      string `json:"url" xml:"test"`
+	Login     string    `json:"login" xml:"test"` // тэги для записи в JSON
+	Password  string    `json:"password" xml:"test"`
+	Url       string    `json:"url" xml:"test"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type accountWithTimeStamp struct {
@@ -33,9 +35,11 @@ func NewAccount(login, password, urlString string) (*Account, error) {
 	}
 
 	newAcc := &Account{
-		Url:      urlString,
-		Login:    login,
-		Password: password,
+		Url:       urlString,
+		Login:     login,
+		Password:  password,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	if password == "" {
 		newAcc.generatePassword(12)
@@ -80,7 +84,7 @@ func (acc accountWithTimeStamp) OutputPassword() {
 }
 
 func (acc Account) OutputPassword() {
-	fmt.Printf("Login: %s\nPassword: %s\nURL: %s", acc.Login, acc.Password, acc.Url)
+	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s", acc.Login, acc.Password, acc.Url)
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-*!")

@@ -4,11 +4,10 @@ import (
 	"Password/account"
 	"Password/files"
 	"fmt"
+	"github.com/fatih/color"
 )
 
 func main() {
-	//defer fmt.Println(1) // будет выполнен последний
-	//defer fmt.Println(2)
 Menu:
 	for {
 		switch getMenu() {
@@ -27,7 +26,7 @@ Menu:
 func getMenu() int {
 	var userChoice int
 
-	fmt.Println("_Менеджер паролей_")
+	fmt.Println(color.RedString("_Менеджер паролей_"))
 	fmt.Println("1. Создать аккаунт")
 	fmt.Println("2. Найти аккаунт")
 	fmt.Println("3. Удалить аккаунт")
