@@ -83,8 +83,8 @@ func (acc accountWithTimeStamp) OutputPassword() {
 	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s", acc.Login, acc.Password, acc.Url, acc.createdAt, acc.updatedAt)
 }
 
-func (acc Account) OutputPassword() {
-	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s", acc.Login, acc.Password, acc.Url)
+func (acc Account) Output() {
+	fmt.Printf("Login: %s\nPassword: %s\nURL: %s\ncreatedAt: %s\nupdatedAt: %s\n", acc.Login, acc.Password, acc.Url, acc.CreatedAt, acc.UpdatedAt)
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-*!")

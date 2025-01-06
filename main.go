@@ -2,19 +2,21 @@ package main
 
 import (
 	"Password/account"
-	"Password/files"
 	"fmt"
 	"github.com/fatih/color"
 )
 
 func main() {
+	fmt.Println(color.RedString("_Менеджер паролей_"))
+	vault := account.NewVault()
+
 Menu:
 	for {
 		switch getMenu() {
 		case 1:
-			createAccount()
+			createAccount(vault)
 		case 2:
-			findAccount()
+			findAccount(vault)
 		case 3:
 			deleteAccount()
 		default:
@@ -26,7 +28,6 @@ Menu:
 func getMenu() int {
 	var userChoice int
 
-	fmt.Println(color.RedString("_Менеджер паролей_"))
 	fmt.Println("1. Создать аккаунт")
 	fmt.Println("2. Найти аккаунт")
 	fmt.Println("3. Удалить аккаунт")
@@ -39,7 +40,7 @@ func getMenu() int {
 }
 
 // Создание аккаунта и запись в JSON файл
-func createAccount() {
+func createAccount(vault *account.Vault) {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
@@ -56,19 +57,20 @@ func createAccount() {
 		return
 	}
 
-	vault := account.NewVault()
 	vault.AddAccount(*myAccount)
-	data, err := vault.ToBytes()
-
-	if err != nil {
-		fmt.Println("Не удалось преобразовать в JSON")
-		return
-	}
-	files.WriteFile(data, "data.json")
 }
 
-// Поиск аккаунта
-func findAccount() {}
+// Поиск аккаунта по URL
+func findAccount(vault *account.Vault) {
+	url := promptData("Введите URL для поиска")
+	accounts := vault.FindAccountsByURL(url)
+	if len(accounts) == 0 {
+		color.Red("Аккаунтов не найдено")
+	}
+	for _, account := range accounts {
+		account.Output()
+	}
+}
 
 // Удаление аккаунта
 func deleteAccount() {}
