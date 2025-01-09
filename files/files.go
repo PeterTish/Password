@@ -19,7 +19,7 @@ func WriteFile(content []byte, name string) {
 		fmt.Println(err)
 	}
 	len, err := file.Write(content) // число байт записанных
-	defer file.Close()              // выполнить вконце stack frame
+	defer file.Close()              // выполнить в конце stack frame
 	if err != nil {
 		fmt.Println(err)
 		return
