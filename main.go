@@ -2,13 +2,16 @@ package main
 
 import (
 	"Password/account"
+	"Password/cloud"
+	"Password/output"
 	"fmt"
 	"github.com/fatih/color"
 )
 
 func main() {
 	fmt.Println(color.RedString("_Менеджер паролей_"))
-	vault := account.NewVault()
+	//vault := account.NewVault(files.NewJsonDb("data.json"))
+	vault := account.NewVault(cloud.NewCloudDb("https://a.ru"))
 
 Menu:
 	for {
@@ -40,7 +43,7 @@ func getMenu() int {
 }
 
 // Создание аккаунта и запись в JSON файл
-func createAccount(vault *account.Vault) {
+func createAccount(vault *account.VaultWithDb) {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
@@ -50,9 +53,9 @@ func createAccount(vault *account.Vault) {
 	if err != nil {
 		switch err.Error() {
 		case "LOGIN_EMPTY":
-			fmt.Println("Пустой логин")
+			output.PrintError("Пустой логин")
 		case "INVALID_URL":
-			fmt.Println("Неверный формат URL")
+			output.PrintError("Неверный формат URL")
 		}
 		return
 	}
@@ -61,7 +64,7 @@ func createAccount(vault *account.Vault) {
 }
 
 // Поиск аккаунта по URL
-func findAccount(vault *account.Vault) {
+func findAccount(vault *account.VaultWithDb) {
 	url := promptData("Введите URL для поиска")
 	accounts := vault.FindAccountsByURL(url)
 	if len(accounts) == 0 {
@@ -73,13 +76,13 @@ func findAccount(vault *account.Vault) {
 }
 
 // Удаление аккаунта
-func deleteAccount(vault *account.Vault) {
+func deleteAccount(vault *account.VaultWithDb) {
 	url := promptData("Введите URL для поиска")
 	isDeleted := vault.DeleteAccountByURL(url)
 	if isDeleted {
 		color.Green("Удалено")
 	} else {
-		color.Red("Не найдено")
+		output.PrintError("Не найдено")
 	}
 }
 
