@@ -2,7 +2,7 @@ package main
 
 import (
 	"Password/account"
-	"Password/cloud"
+	"Password/files"
 	"Password/output"
 	"fmt"
 	"github.com/fatih/color"
@@ -10,17 +10,25 @@ import (
 
 func main() {
 	fmt.Println(color.RedString("_Менеджер паролей_"))
-	//vault := account.NewVault(files.NewJsonDb("data.json"))
-	vault := account.NewVault(cloud.NewCloudDb("https://a.ru"))
+	vault := account.NewVault(files.NewJsonDb("data.json"))
+	//vault := account.NewVault(cloud.NewCloudDb("https://a.ru"))
 
 Menu:
 	for {
-		switch getMenu() {
-		case 1:
+		variant := promptData([]string{
+			"1. Создать аккаунт",
+			"2. Найти аккаунт",
+			"3. Удалить аккаунт",
+			"4. Выход",
+			"Выберите вариант",
+		})
+
+		switch variant {
+		case "1":
 			createAccount(vault)
-		case 2:
+		case "2":
 			findAccount(vault)
-		case 3:
+		case "3":
 			deleteAccount(vault)
 		default:
 			break Menu
@@ -28,25 +36,11 @@ Menu:
 	}
 }
 
-func getMenu() int {
-	var userChoice int
-
-	fmt.Println("1. Создать аккаунт")
-	fmt.Println("2. Найти аккаунт")
-	fmt.Println("3. Удалить аккаунт")
-	fmt.Println("4. Выход")
-
-	fmt.Print("Выберите действие: ")
-	fmt.Scan(&userChoice)
-
-	return userChoice
-}
-
 // Создание аккаунта и запись в JSON файл
 func createAccount(vault *account.VaultWithDb) {
-	login := promptData("Введите логин")
-	password := promptData("Введите пароль")
-	url := promptData("Введите URL")
+	login := promptData([]string{"Введите логин"})
+	password := promptData([]string{"Введите пароль"})
+	url := promptData([]string{"Введите URL"})
 
 	myAccount, err := account.NewAccount(login, password, url)
 
@@ -65,7 +59,7 @@ func createAccount(vault *account.VaultWithDb) {
 
 // Поиск аккаунта по URL
 func findAccount(vault *account.VaultWithDb) {
-	url := promptData("Введите URL для поиска")
+	url := promptData([]string{"Введите URL для поиска"})
 	accounts := vault.FindAccountsByURL(url)
 	if len(accounts) == 0 {
 		color.Red("Аккаунтов не найдено")
@@ -77,7 +71,7 @@ func findAccount(vault *account.VaultWithDb) {
 
 // Удаление аккаунта
 func deleteAccount(vault *account.VaultWithDb) {
-	url := promptData("Введите URL для поиска")
+	url := promptData([]string{"Введите URL для поиска"})
 	isDeleted := vault.DeleteAccountByURL(url)
 	if isDeleted {
 		color.Green("Удалено")
@@ -86,8 +80,21 @@ func deleteAccount(vault *account.VaultWithDb) {
 	}
 }
 
-func promptData(prompt string) string {
-	fmt.Print(prompt + ": ")
+//func promptData(prompt string) string {
+//	fmt.Print(prompt + ": ")
+//	var res string
+//	fmt.Scanln(&res)
+//	return res
+//}
+
+func promptData[T any](prompt []T) string {
+	for i := 0; i < len(prompt); i++ {
+		if i == len(prompt)-1 {
+			fmt.Printf("%v: ", prompt[i])
+		} else {
+			fmt.Println(prompt[i])
+		}
+	}
 	var res string
 	fmt.Scanln(&res)
 	return res

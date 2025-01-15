@@ -98,6 +98,7 @@ func (vault *VaultWithDb) DeleteAccountByURL(url string) bool {
 	isDeleted := false
 	for _, account := range vault.Accounts {
 		isMatched := strings.Contains(account.Url, url)
+		// Если совпадения нет, то добавляем и перезаписываем
 		if !isMatched {
 			accounts = append(accounts, account)
 			continue
